@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import '../app.css';
 	import type { LayoutServerData } from './$types';
-	import { setTokens } from '../models.svelte';
+	import { getTokens, setTokens } from '../models.svelte';
 	let {
 		data,
 		children
@@ -11,10 +11,12 @@
 		children: Snippet;
 	} = $props();
 
+	setTokens();
 	$effect(() => {
 		if (data.tokens) {
-			console.log('set the token');
-			setTokens(data.tokens.accessToken, data.tokens.refreshToken);
+			const tokens = getTokens();
+			tokens.accessToken = data.tokens.accessToken;
+			tokens.refreshToken = data.tokens.refreshToken;
 		}
 	});
 </script>

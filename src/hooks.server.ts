@@ -1,10 +1,12 @@
 import type { Handle } from '@sveltejs/kit';
 import { refreshAccessToken } from './queries/auth';
-import { setCookie } from './cookies';
+import { cookieSettings } from './cookies';
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const accessToken = event.cookies.get('accessToken');
-	const refreshToken = event.cookies.get('refreshToken');
+	const { accessTokenSettings, refreshTokenSettings } = cookieSettings;
+
+	const accessToken = event.cookies.get(accessTokenSettings.name);
+	const refreshToken = event.cookies.get(refreshTokenSettings.name);
 	if (accessToken && refreshToken) {
 		event.locals.tokens = {
 			accessToken,
@@ -13,7 +15,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 	} else if (!accessToken && refreshToken) {
 		const accessTokenRes = await refreshAccessToken(refreshToken);
 		if (accessTokenRes.success) {
-			setCookie('accessToken', accessTokenRes.data, event.cookies);
+			event.cookies.set(accessTokenSettings.name, accessTokenRes.data, accessTokenSettings.opts);
+
 			event.locals.tokens = {
 				refreshToken,
 				accessToken: accessTokenRes.data

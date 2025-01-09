@@ -1,15 +1,17 @@
 import { fail, redirect } from '@sveltejs/kit';
-import { login } from '../server/login';
+import { login } from '../../server/login';
 import type { Actions, PageServerLoad } from './$types';
-import { setCookie } from '../cookies';
+import { cookieSettings } from '../../cookies';
 export const load: PageServerLoad = async ({ locals }) => {
 	if (locals.tokens) {
 		redirect(307, '/authed');
 	}
 };
 
-export const actions = {
+export const actions: Actions = {
 	default: async ({ cookies, request }) => {
+		const { accessTokenSettings, refreshTokenSettings } = cookieSettings;
+
 		const formData = await request.formData();
 		const loginRes = await login(
 			formData.get('username')?.toString() || '',
@@ -19,7 +21,7 @@ export const actions = {
 			return fail(400);
 		}
 
-		setCookie('accessToken', loginRes.data.accessToken, cookies);
-		setCookie('refreshToken', loginRes.data.refreshToken, cookies);
+		cookies.set(accessTokenSettings.name, loginRes.data.accessToken, accessTokenSettings.opts);
+		cookies.set(refreshTokenSettings.name, loginRes.data.refreshToken, refreshTokenSettings.opts);
 	}
 } satisfies Actions;
