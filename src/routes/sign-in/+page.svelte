@@ -1,21 +1,11 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
 </script>
 
 <div class="form-container">
-	<form
-		method="POST"
-		use:enhance={() => {
-			return async ({ result, update }) => {
-				if (result.type === 'success') {
-					window.location.reload();
-				}
-			};
-		}}
-	>
-		<input type="text" name="username" placeholder="Username" />
-		<input type="password" name="password" placeholder="Password" />
+	<form method="POST" use:enhance>
+		<input type="text" name="username" placeholder="Username" value="test" />
+		<input type="password" name="password" placeholder="Password" value="test" />
 		<input type="submit" />
 	</form>
 </div>

@@ -7,7 +7,7 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			tokens: AuthTokens;
+			isAuthenticated: boolean;
 		}
 		// interface PageData {}
 		// interface PageState {}

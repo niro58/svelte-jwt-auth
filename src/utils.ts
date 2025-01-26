@@ -8,14 +8,3 @@ type Failure<> = {
 };
 
 export type Result<T> = Success<T> | Failure;
-
-export type AuthTokens = {
-	accessToken: string;
-	refreshToken: string;
-};
-
-
-export type GetRequest = {
-	method: 'GET';
-	
-}

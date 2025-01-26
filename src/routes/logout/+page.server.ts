@@ -1,14 +1,13 @@
-import { redirect } from '@sveltejs/kit';
-import type { PageServerLoad } from './$types';
-import { cookieSettings } from '../../cookies';
+import { deleteTokenCookies } from '$lib/server/auth';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
 
-export const load: PageServerLoad = ({ cookies }) => {
-	const { accessTokenSettings, refreshTokenSettings } = cookieSettings;
+export const actions: Actions = {
+	default: async (event) => {
+		if (!event.locals.isAuthenticated) {
+			return fail(401);
+		}
+		deleteTokenCookies(event);
 
-	if (!cookies.get(accessTokenSettings.name) && !cookies.get(refreshTokenSettings.name)) {
-		redirect(307, '/sign-in');
+		return redirect(302, '/sign-in');
 	}
-
-	cookies.set(accessTokenSettings.name, '', { path: '/', maxAge: 0 });
-	cookies.set(refreshTokenSettings.name, '', { path: '/', maxAge: 0 });
 };
